@@ -146,6 +146,7 @@ public class CtrlDocente implements ActionListener {
         }
     }
 
+    //Color rosado
     public boolean validaEspacios(frmDocente vista) {
         String msj = "No deje vacios el/los campo/s:";
         boolean vacios = false;
@@ -208,14 +209,16 @@ public class CtrlDocente implements ActionListener {
         vista.txtTelefono.setText(d.getTelefono());
         vista.idD = d.getId();
 
+        //REcoje los datos del usuario
         u = udao.buscarId(d.getUsuarioId());
         vista.u = u;
         vista.txtUsuario.setText(u.getUser());
         vista.jPassword.setText(u.getPassword());
-
+        //Cambia de nombre al boton Registrar
         vista.btnRegistrar.setText("Actualizar");
     }
 
+    //Acción al hacer clic en Actualizar
     public void accionModificar(frmDocente vista) {
         d.setNombre(vista.txtNombre.getText().trim());
         d.setApellido(vista.txtApellido.getText().trim());
@@ -246,6 +249,7 @@ public class CtrlDocente implements ActionListener {
 
     }
 
+    //Accion la hacer clic en eliminar
     public void eliminar(frmDocente vista, int row) {
         int opcion = JOptionPane.showConfirmDialog(vista, "¿Esta seguro/a que desea eliminar?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (opcion == JOptionPane.YES_OPTION) {

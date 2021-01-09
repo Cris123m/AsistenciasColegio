@@ -1,6 +1,7 @@
 package Modelo;
 
 public class Alumno {
+    //Declaracionde variables
     private int id;
     private String nombre;
     private String apellido;
@@ -9,9 +10,11 @@ public class Alumno {
     private int cursoId;
     private int usuarioId;
 
+    //Crear constructor vacio
     public Alumno() {
     }
 
+    //Crear constructor con datos
     public Alumno(int id, String nombre, String apellido, String direccion, String telefono, int cursoId, int usuarioId) {
         this.id = id;
         this.nombre = nombre;
@@ -77,5 +80,7 @@ public class Alumno {
     public void setUsuarioId(int usuarioId) {
         this.usuarioId = usuarioId;
     }
+
     
+
 }

@@ -10,6 +10,7 @@ public class AlumnoDAO {
     PreparedStatement ps;
     ResultSet rs;
     
+    //Funcion que devuelve la consulta de todos los alumnos
     public List listar(){
         List<Alumno> datos = new ArrayList<>();
         String sql = "SELECT * FROM alumnos";
@@ -41,7 +42,7 @@ public class AlumnoDAO {
     }
     
     public int registrar(Alumno d){
-        String sql = "INSERT INTO `alumnos`( `nombre`, `apellido`, `direccion`, `telefono`, curso_id,`usuario_id`) VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO `alumnos`(`nombre`, `apellido`, `direccion`, `telefono`, curso_id,`usuario_id`) VALUES (?,?,?,?,?,?)";
         int idGenerado=0;
         try {
             con=conectar.getConnection();
