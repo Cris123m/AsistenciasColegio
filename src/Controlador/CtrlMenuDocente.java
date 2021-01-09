@@ -1,8 +1,10 @@
 package Controlador;
 
 import Vista.frmAlumno;
+import Vista.frmAsistencia;
 import Vista.frmCurso;
 import Vista.frmDocente;
+import Vista.frmLogin;
 import Vista.frmMenuDocente;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -61,10 +63,22 @@ public class CtrlMenuDocente implements ActionListener {
             vista.setVisible(false);
         }
         if(e.getSource()==vista.btnAsistencias){
-            //
+            frmAsistencia fa;
+            fa = new frmAsistencia();
+            CtrlAsistencia ca = new CtrlAsistencia(fa);
+            
+            fa.setVisible(true);
+            fa.setLocationRelativeTo(null);
+            vista.setVisible(false);
         }
         if(e.getSource()==vista.btnCerrar){
-            //
+            frmLogin fa;
+            fa = new frmLogin();
+            CtrlLogin ca = new CtrlLogin(fa);
+            
+            fa.setVisible(true);
+            fa.setLocationRelativeTo(null);
+            vista.setVisible(false);
         }
     }
 

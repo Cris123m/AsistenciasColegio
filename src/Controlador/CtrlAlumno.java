@@ -131,7 +131,7 @@ public class CtrlAlumno implements ActionListener {
         Usuario u = new Usuario();
         u.setUser(vista.txtUsuario.getText().trim());
         u.setPassword(new String(vista.jPassword.getPassword()).trim());
-        u.setTipoId(1);
+        u.setTipoId(2);
         if (!usuarioExiste(u)) {
             int idU = udao.registrar(u);
             if (idU > 0) {
@@ -261,6 +261,7 @@ public class CtrlAlumno implements ActionListener {
         String usuarioAnt = u.getUser();
         u.setUser(vista.txtUsuario.getText().trim());
         u.setPassword(new String(vista.jPassword.getPassword()).trim());
+        u.setTipoId(2);
 
         if (usuarioAnt.equals(u.getUser()) || !usuarioExiste(u)) {
             if (dao.modificar(d)) {

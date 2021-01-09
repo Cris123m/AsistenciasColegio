@@ -8,6 +8,7 @@ import Vista.frmLogin;
 import Vista.frmMenuDocente;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 
 public class CtrlLogin implements ActionListener{
     UsuarioDAO  dao = new UsuarioDAO();
@@ -49,9 +50,15 @@ public class CtrlLogin implements ActionListener{
                     break;
                 case 2:
                     //Menú de estudiante
+                    JOptionPane.showMessageDialog(vista, "Ingreso solo para docentes", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                    limpiarDatos(vista);
+                    break;
                 default:
                     throw new AssertionError();
             }
+        }else{
+            JOptionPane.showMessageDialog(vista, "Usuario o contraseña incorrecta", "Error", JOptionPane.ERROR_MESSAGE);
+            limpiarDatos(vista);
         }
     }
     

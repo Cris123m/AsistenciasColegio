@@ -32,7 +32,7 @@ public class CtrlMenuAlumno implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==vista.btnAlumnos){
+        if(e.getSource()==vista.btnDocentes){
             frmAlumno fd;
             fd = new frmAlumno();
             CtrlAlumno cd = new CtrlAlumno(fd);

@@ -6,6 +6,8 @@ import Modelo.Asistencia;
 import Modelo.AsistenciaDAO;
 import Modelo.Curso;
 import Modelo.CursoDAO;
+import Modelo.Docente;
+import Modelo.DocenteDAO;
 import Modelo.Usuario;
 import Modelo.UsuarioDAO;
 import Modelo.LimitadorCaracteres;
@@ -17,7 +19,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -33,6 +43,8 @@ public class CtrlAsistencia implements ActionListener {
     Curso cu = new Curso();
     AlumnoDAO adao = new AlumnoDAO();
     Alumno al = new Alumno();
+    DocenteDAO ddao = new DocenteDAO();
+    Docente doc = new Docente();
     frmAsistencia vista = new frmAsistencia();
     DefaultTableModel modelo = new DefaultTableModel();
 
@@ -43,18 +55,83 @@ public class CtrlAsistencia implements ActionListener {
         this.vista = v;
         //Instaciamos la tabla con render
         vista.tabla.setDefaultRenderer(Object.class, new Render());
-        //Listar los asistencias en la tabla
-        listar(vista.tabla);
+        
+        //Fecha actual
+        Calendar c2 = new GregorianCalendar();
+        this.vista.dchFecha.setCalendar(c2);
+
         cargarCursos(vista.cbxCurso);
         //Instanciamos los botones 
-        this.vista.btnRegistrar.addActionListener(this);
+        //this.vista.btnRegistrar.addActionListener(this);
         this.vista.btnLimpiar.addActionListener(this);
         this.vista.btnCancelar.addActionListener(this);
-        this.vista.cbxCurso.addItemListener(new ItemListener() { 
-        public void itemStateChanged(ItemEvent arg0) { 
-            System.out.println(arg0);
-           } 
-          }); 
+        this.vista.cbxCurso.addItemListener(new ItemListener() {
+            //Escucha del combobox al cambiar
+            public void itemStateChanged(ItemEvent arg0) {
+                if (arg0.getStateChange() == 1) {
+                    if (validacion(vista)) {
+                        Curso cu = (Curso) arg0.getItem();
+                        Docente d = new Docente();
+                        d.setId(cu.getDocenteId());
+                        ddao.buscar(d);
+                        vista.txtDocente.setText(d.toString());
+                        //Listar los asistencias en la tabla
+                        listar(vista.tabla, cu.getId());
+                    }
+                }
+            }
+        });
+        //Escucha eventos de tabla
+        this.vista.tabla.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int column = vista.tabla.getColumnModel().getColumnIndexAtX(e.getX());
+                int row = e.getY() / vista.tabla.getRowHeight();
+
+                if (row < vista.tabla.getRowCount() && row >= 0 && column < vista.tabla.getColumnCount() && column >= 0) {
+                    Object value = vista.tabla.getValueAt(row, column);
+                    if (value instanceof JButton) {
+                        ((JButton) value).doClick();
+                        JButton boton = (JButton) value;
+
+                        if (boton.getName().equals("m")) {
+                            System.out.println("Boton modificar" + row);
+                        }
+                        if (boton.getName().equals("e")) {
+                            System.out.println("Boton eliminar" + row);
+                        }
+                        if (boton.getName().equals("a")) {
+                            System.out.println("click check");
+                        }
+                    }
+                    if (value instanceof JCheckBox) {
+                        if (validacion(vista)) {
+                            registrarAsistencia(row);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
     }
 
     @Override
@@ -89,90 +166,101 @@ public class CtrlAsistencia implements ActionListener {
         vista.cbxCurso.setSelectedIndex(0);
         vista.txtDocente.setBackground(Color.white);
         vista.cbxCurso.setBackground(Color.white);
-        vista.btnRegistrar.setEnabled(true);
+        //vista.btnRegistrar.setEnabled(true);
         vista.btnLimpiar.setEnabled(true);
         vista.btnCancelar.setEnabled(true);
-        vista.btnRegistrar.setText("Registrar");
+        //vista.btnRegistrar.setText("Registrar");
     }
 
-    public void listar(JTable tabla) {
-        JButton btnModificar = new JButton("Modificar");
-        btnModificar.setName("m");
-        JButton btnEliminar = new JButton("Eliminar");
-        btnEliminar.setName("e");
-        
-        JCheckBox ch = new JCheckBox();
-        ch.setName("a");
-        ch.setSelected(true);
+    public void listar(JTable tabla, int idCurso) {
+//        JButton btnModificar = new JButton("Modificar");
+//        btnModificar.setName("m");
+//        JButton btnEliminar = new JButton("Eliminar");
+//        btnEliminar.setName("e");
 
+//        JCheckBox ch = new JCheckBox();
+//        ch.setName("a");
+//        ch.setSelected(false);
         modelo = (DefaultTableModel) tabla.getModel();
         modelo.setRowCount(0);
         //cu.setId(((Curso)vista.cbxCurso.getSelectedItem()).getId());
-        cu.setId(1);
+        cu.setId(idCurso);
         List<Alumno> listaAlumnos = adao.listarPorCurso(cu.getId());
-        
+
         List<Asistencia> lista = dao.listar();
         Object[] object = new Object[8];
-        
+
         for (Alumno alumno : listaAlumnos) {
+            int cantAsistencias = dao.asistenciaAlumno(alumno.getId());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String sqlDate = sdf.format(vista.dchFecha.getDate());
+            Asistencia a = new Asistencia();
+            a.setAlumnoId(alumno.getId());
+            boolean asis = dao.asistenciaAlFecha(a, sqlDate);
+            JCheckBox ch = new JCheckBox();
+            ch.setSelected(asis);
             //Curso cu = new Curso();
             //cu.setId(asistencia.getCursoId());
             //cdao.buscar(cu);
             object[0] = alumno.getNombre();
             object[1] = alumno.getApellido();
-            object[2] = 0;
+            object[2] = cantAsistencias;
             object[3] = ch;
-            object[4] = btnModificar;
-            object[5] = btnEliminar;
             modelo.addRow(object);
         }
         vista.tabla.setModel(modelo);
         vista.tabla.setRowHeight(30);
     }
 
-    /*public void registrarUsuario(frmAsistencia vista) {
-        Usuario u = new Usuario();
-        u.setUser(vista.txtUsuario.getText().trim());
-        u.setPassword(new String(vista.jPassword.getPassword()).trim());
-        u.setTipoId(1);
-        if (!usuarioExiste(u)) {
-            int idU = udao.registrar(u);
-            if (idU > 0) {
-                registrarAsistencia(vista, idU);
-            } else {
-                JOptionPane.showMessageDialog(vista, "Ha ocurrido un problema al registrar usuario", "Error", JOptionPane.ERROR_MESSAGE);
+    public void registrarAsistencia(int row) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String sqlDate = sdf.format(vista.dchFecha.getDate());
+        int idCurso = ((Curso) vista.cbxCurso.getSelectedItem()).getId();
+        cu.setId(idCurso);
+        List<Alumno> listaAlumnos = adao.listarPorCurso(cu.getId());
+        for (int i = 0; i < listaAlumnos.size(); i++) {
+            if (i == row) {
+                Alumno al = listaAlumnos.get(i);
+                Asistencia a = new Asistencia();
+                a.setAlumnoId(al.getId());
+                if (dao.asistenciaAlFecha(a, sqlDate)) {
+                    if (dao.eliminar(a)) {
+                        JOptionPane.showMessageDialog(vista, "Se ha quitado la asistencia", "Correcto", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(vista, "Ha ocurrido un problema al quitar asistencia", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    a.setFecha(vista.dchFecha.getDate());
+
+                    int idA = dao.registrar(a);
+                    if (idA > 0) {
+                        JOptionPane.showMessageDialog(vista, "El asistencia registrada", "Correcto", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(vista, "Ha ocurrido un problema al registrar  asistencia", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
-        } else {
-            JOptionPane.showMessageDialog(vista, "No se puede registrar, nombre de usuario ya existe", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+            listar(vista.tabla, idCurso);
 
-    }*/
-
-    /*public void registrarAsistencia(frmAsistencia vista, int idUsuario) {
-        Asistencia a = new Asistencia();
-        a.setNombre(vista.txtNombre.getText().trim());
-        a.setApellido(vista.txtApellido.getText().trim());
-        a.setDireccion(vista.txtDireccion.getText().trim());
-        a.setTelefono(vista.txtTelefono.getText().trim());
-        a.setCursoId(((Curso)vista.cbxCurso.getSelectedItem()).getId());
-        a.setUsuarioId(idUsuario);
-        
-        if (dao.registrar(a) > 0) {
-            JOptionPane.showMessageDialog(vista, "El asistencia se ha registrado correctamente", "Correcto", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(vista, "Ha ocurrido un problema al registrar asistencia", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }*/
+    }
 
     public boolean validacion(frmAsistencia vista) {
         String msj = "No deje vacios el/los campo/s:";
         boolean vacios = false;
-        if (vista.cbxCurso.getSelectedIndex()==0) {
+        if (vista.cbxCurso.getSelectedIndex() == 0) {
             msj += " Curso";
             vacios = true;
             vista.cbxCurso.setBackground(Color.PINK);
         } else {
             vista.cbxCurso.setBackground(Color.white);
+        }
+        if (vista.dchFecha.toString().equals("")) {
+            msj += " Fecha";
+            vacios = true;
+            vista.dchFecha.setBackground(Color.PINK);
+        } else {
+            vista.dchFecha.setBackground(Color.white);
         }
         if (vacios) {
             JOptionPane.showMessageDialog(vista, msj, "Error", JOptionPane.ERROR_MESSAGE);
@@ -188,20 +276,20 @@ public class CtrlAsistencia implements ActionListener {
         //envio la id en una variable pública en el formulario para mantener la id a ser modificado
         vista.idD = a.getId();
         //Creo un nuevo objeto alumno y guardo la id
-        Alumno alum = new Alumno();  
+        Alumno alum = new Alumno();
         alum.setId(a.getAlumnoId());
         //Busco el alumno con aquella id
         adao.buscar(alum);
         //Busco el curso
         List<Curso> listaCurso = cdao.listar();
-        int indexCurso=0;
+        int indexCurso = 0;
         for (int i = 0; i < listaCurso.size(); i++) {
             Curso cur = listaCurso.get(i);
 //            if(cur.getId()==a.getCursoId()){
 //                indexCurso=i+1;
 //            }
         }
-        
+
 //        vista.cbxCurso.setSelectedIndex(indexCurso);
 //
 //        u = udao.buscarId(a.getUsuarioId());
@@ -257,8 +345,9 @@ public class CtrlAsistencia implements ActionListener {
                 JOptionPane.showMessageDialog(vista, "Ha ocurrido un problema al eliminar asistencia", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-            listar(vista.tabla);
-            limpiarDatos(vista);
+            Curso cu = (Curso) vista.cbxCurso.getSelectedItem();
+            listar(vista.tabla, cu.getId());
+            //limpiarDatos(vista);
 
         } else {
             JOptionPane.showMessageDialog(vista, "El asistencia NO se ha eliminado", "Correcto", JOptionPane.INFORMATION_MESSAGE);
@@ -266,7 +355,7 @@ public class CtrlAsistencia implements ActionListener {
 
     }
 
-    public void cargarCursos(JComboBox cbx){
+    public void cargarCursos(JComboBox cbx) {
         cbx.removeAllItems();
         cbx.addItem("Seleccione");
         //Cargo los datos

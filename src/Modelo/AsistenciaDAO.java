@@ -42,7 +42,7 @@ public class AsistenciaDAO {
         try {
             con=conectar.getConnection();
             ps=con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, d.getFecha().toString());
+            ps.setTimestamp(1, new Timestamp(d.getFecha().getTime()) );
             ps.setInt(2, d.getAlumnoId());
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
@@ -133,5 +133,54 @@ public class AsistenciaDAO {
             }
         }
     }
+    
+    public int asistenciaAlumno(int AlumnoId){
+        String sql = "SELECT COUNT(*) FROM `asistencias` WHERE alumno_id=?";
+        try {
+            con=conectar.getConnection();
+            ps=con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, AlumnoId);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getInt(1);
+            }
+            return 0;
+        } catch (SQLException e) {
+            System.err.println(e);
+            return 0;
+        }finally{
+            try {
+                con.close();
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+    }
    
+     public boolean asistenciaAlFecha(Asistencia a,String fecha){
+        String sql = "SELECT * FROM `asistencias` WHERE alumno_id=? and fecha=?";
+        try {
+            con=conectar.getConnection();
+            ps=con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, a.getAlumnoId());
+            ps.setString(2, fecha);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                a.setId(rs.getInt(1));
+                a.setFecha(rs.getDate(2));
+                a.setAlumnoId(rs.getInt(3));
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            System.err.println(e);
+            return false;
+        }finally{
+            try {
+                con.close();
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+    }
 }
