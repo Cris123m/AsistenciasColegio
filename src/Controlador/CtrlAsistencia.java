@@ -21,9 +21,12 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -55,7 +58,7 @@ public class CtrlAsistencia implements ActionListener {
         this.vista = v;
         //Instaciamos la tabla con render
         vista.tabla.setDefaultRenderer(Object.class, new Render());
-        
+
         //Fecha actual
         Calendar c2 = new GregorianCalendar();
         this.vista.dchFecha.setCalendar(c2);
@@ -81,6 +84,20 @@ public class CtrlAsistencia implements ActionListener {
                 }
             }
         });
+        //Escuchar eventos de Fecha
+        this.vista.dchFecha.getDateEditor().addPropertyChangeListener(
+                new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                if ("date".equals(e.getPropertyName())) {
+                    /*System.out.println(e.getPropertyName()
+                            + ": " + (Date) e.getNewValue());*/
+                    //Listar los asistencias en la tabla
+                        listar(vista.tabla, cu.getId());
+                }
+            }
+        }
+        );
         //Escucha eventos de tabla
         this.vista.tabla.addMouseListener(new MouseListener() {
             @Override
