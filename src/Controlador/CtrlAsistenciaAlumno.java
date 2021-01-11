@@ -38,7 +38,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-public class CtrlAsistencia implements ActionListener {
+public class CtrlAsistenciaAlumno implements ActionListener {
 
     AsistenciaDAO dao = new AsistenciaDAO();
     Asistencia a = new Asistencia();
@@ -51,10 +51,10 @@ public class CtrlAsistencia implements ActionListener {
     frmAsistencia vista = new frmAsistencia();
     DefaultTableModel modelo = new DefaultTableModel();
 
-    public CtrlAsistencia() {
+    public CtrlAsistenciaAlumno() {
     }
 
-    public CtrlAsistencia(frmAsistencia v) {
+    public CtrlAsistenciaAlumno(frmAsistencia v) {
         this.vista = v;
         //Instaciamos la tabla con render
         vista.tabla.setDefaultRenderer(Object.class, new Render());

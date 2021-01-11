@@ -6,14 +6,16 @@ public class Asistencia {
     private int id;
     private Date fecha;
     private int alumnoId;
+    private int estadoId;
 
     public Asistencia() {
     }
 
-    public Asistencia(int id, Date fecha, int alumnoId) {
+    public Asistencia(int id, Date fecha, int alumnoId, int estadoId) {
         this.id = id;
         this.fecha = fecha;
         this.alumnoId = alumnoId;
+        this.estadoId = estadoId;
     }
 
     public int getId() {
@@ -39,5 +41,13 @@ public class Asistencia {
     public void setAlumnoId(int alumnoId) {
         this.alumnoId = alumnoId;
     }
-    
+
+    public int getEstadoId() {
+        return estadoId;
+    }
+
+    public void setEstadoId(int estadoId) {
+        this.estadoId = estadoId;
+    }
+
 }

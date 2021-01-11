@@ -41,11 +41,11 @@ public class frmAsistencia extends javax.swing.JFrame {
 
             },
             new String [] {
-                "NOMBRE", "APELLIDO", "ASISTENCIAS", "PRESENTE"
+                "NOMBRE", "APELLIDO", "ASISTENCIAS", "PRESENTE", "FUGA"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
