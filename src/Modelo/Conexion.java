@@ -8,7 +8,7 @@ public class Conexion {
     public Connection getConnection(){
         String url ="jdbc:mysql://localhost:3306/colegio?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         String user="root";
-        String pass ="root";
+        String pass ="ROOT";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con=(Connection) DriverManager.getConnection(url,user,pass);

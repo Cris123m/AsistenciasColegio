@@ -2,6 +2,7 @@ package Controlador;
 
 import Vista.frmAlumno;
 import Vista.frmAsistencia;
+import Vista.frmAsistenciaAlumno;
 import Vista.frmCurso;
 import Vista.frmDocente;
 import Vista.frmLogin;
@@ -31,6 +32,7 @@ public class CtrlMenuDocente implements ActionListener {
         this.vista.btnCursos.addActionListener(this);
         this.vista.btnDocentes.addActionListener(this);
         this.vista.btnEstudiantes.addActionListener(this);
+        this.vista.btnAsistenciaAlumnos.addActionListener(this);
     }
 
     @Override
@@ -66,6 +68,14 @@ public class CtrlMenuDocente implements ActionListener {
             frmAsistencia fa;
             fa = new frmAsistencia();
             CtrlAsistencia ca = new CtrlAsistencia(fa);
+            
+            fa.setVisible(true);
+            fa.setLocationRelativeTo(null);
+            vista.setVisible(false);
+        }
+        if(e.getSource()==vista.btnAsistenciaAlumnos){
+            frmAsistenciaAlumno fa = new frmAsistenciaAlumno();
+            CtrlAsistenciaAlumno ca = new CtrlAsistenciaAlumno(fa);
             
             fa.setVisible(true);
             fa.setLocationRelativeTo(null);

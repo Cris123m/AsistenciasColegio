@@ -8,9 +8,6 @@ import Modelo.Curso;
 import Modelo.CursoDAO;
 import Modelo.Docente;
 import Modelo.DocenteDAO;
-import Modelo.Usuario;
-import Modelo.UsuarioDAO;
-import Modelo.LimitadorCaracteres;
 import Modelo.Render;
 import Vista.frmAsistencia;
 import Vista.frmMenuDocente;
@@ -23,14 +20,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -156,24 +149,12 @@ public class CtrlAsistencia implements ActionListener {
         if (e.getSource() == vista.btnLimpiar) {
             limpiarDatos(vista);
         }
-//        if (e.getSource() == vista.btnRegistrar) {
-//            if (validacion(vista)) {
-//                if (vista.btnRegistrar.getText().equals("Registrar")) {
-//                    registrarUsuario(vista);
-//                } else {
-//                    accionModificar(vista);
-//                }
-//                limpiarDatos(vista);
-//                listar(vista.tabla);
-//            }
-//
-//        }
         if (e.getSource() == vista.btnCancelar) {
             frmMenuDocente fmd = new frmMenuDocente();
             CtrlMenuDocente cmd = new CtrlMenuDocente(fmd);
             fmd.setVisible(true);
             fmd.setLocationRelativeTo(null);
-            limpiarDatos(vista);
+            //limpiarDatos(vista);
             vista.setVisible(false);
         }
     }

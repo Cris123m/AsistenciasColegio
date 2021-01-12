@@ -215,4 +215,32 @@ public class AsistenciaDAO {
             }
         }
     }
+     
+     public List listarPorAlumno(int alumnoId){
+        List<Asistencia> datos = new ArrayList<>();
+        String sql = "SELECT * FROM asistencias WHERE alumno_id = ?";
+        try {
+            con=conectar.getConnection();
+            ps=con.prepareStatement(sql);
+            ps.setInt(1,alumnoId);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Asistencia d = new Asistencia();
+                d.setId(rs.getInt(1));
+                d.setFecha(rs.getDate(2));
+                d.setAlumnoId(rs.getInt(3));
+                d.setEstadoId(rs.getInt(4));
+                datos.add(d);
+            }
+        } catch (SQLException e) {
+            System.err.println(e);
+        }finally{
+            try {
+                con.close();
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+        return datos;
+    }
 }
